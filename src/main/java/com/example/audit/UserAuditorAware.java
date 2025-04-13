@@ -16,9 +16,9 @@ public class UserAuditorAware implements AuditorAware<UserRef> {
     @PersistenceContext
     private EntityManager entityManager;
     
-    // 定義硬編碼的用戶引用，添加 id 參數
-    private static final UserRef ADMIN_USER = new UserRef(1L, "admin", "Admin User", "DEFAULT_COMPANY", "DEFAULT_UNIT");
-    private static final UserRef NORMAL_USER = new UserRef(2L, "user", "Normal User", "DEFAULT_COMPANY", "DEFAULT_UNIT");
+    // 定義硬編碼的用戶引用
+    private static final UserRef ADMIN_USER = new UserRef(1L, "admin", "Admin User");
+    private static final UserRef NORMAL_USER = new UserRef(2L, "user", "Normal User");
 
     // 使用 ThreadLocal 變量來存儲當前用戶的公司、單位和語言信息
     private static final ThreadLocal<String> currentCompany = ThreadLocal.withInitial(() -> "DEFAULT_COMPANY");
@@ -31,7 +31,7 @@ public class UserAuditorAware implements AuditorAware<UserRef> {
         // 根據模擬的 token 返回不同的用戶引用，並設置當前的公司和部門
         String token = getCurrentToken();
         UserRef userRef;
-        if ("admin_token".equals(token)) {
+        if ("token1".equals(token)) {
             userRef = new UserRef(ADMIN_USER.getId(), ADMIN_USER.getUsername(), 
                 ADMIN_USER.getDisplayName(), getCurrentCompany(), getCurrentUnit());
         } else {
