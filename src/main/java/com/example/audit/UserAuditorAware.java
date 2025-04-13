@@ -34,9 +34,11 @@ public class UserAuditorAware implements AuditorAware<UserRef> {
         if ("token1".equals(token)) {
             userRef = new UserRef(ADMIN_USER.getId(), ADMIN_USER.getUsername(), 
                 ADMIN_USER.getDisplayName(), getCurrentCompany(), getCurrentUnit());
+            userRef.setName(ADMIN_USER.getDisplayName());  // 設置 name 欄位
         } else {
             userRef = new UserRef(NORMAL_USER.getId(), NORMAL_USER.getUsername(), 
                 NORMAL_USER.getDisplayName(), getCurrentCompany(), getCurrentUnit());
+            userRef.setName(NORMAL_USER.getDisplayName());  // 設置 name 欄位
         }
         return Optional.of(userRef);
     }

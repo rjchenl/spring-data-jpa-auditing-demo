@@ -57,7 +57,32 @@ public class AuditMetadata {
     @Column(name = "modified_time", nullable = false, precision = 6)
     private LocalDateTime modifiedTime;
 
-    // 自定義審計欄位的 Getter 和 Setter
+    @Column(name = "default_language")
+    private String defaultLanguage;
+
+    // Getter 和 Setter 方法
+    public String getCreatedName() {
+        return creator != null ? creator.getName() : null;
+    }
+
+    public void setCreatedName(String createdName) {
+        if (creator == null) {
+            creator = new UserRef();
+        }
+        creator.setName(createdName);
+    }
+
+    public String getModifiedName() {
+        return modifier != null ? modifier.getName() : null;
+    }
+
+    public void setModifiedName(String modifiedName) {
+        if (modifier == null) {
+            modifier = new UserRef();
+        }
+        modifier.setName(modifiedName);
+    }
+
     public String getCreatedCompany() {
         return creator != null ? creator.getCompany() : null;
     }
@@ -101,7 +126,4 @@ public class AuditMetadata {
         }
         modifier.setUnit(modifiedUnit);
     }
-
-    @Column(name = "default_language")
-    private String defaultLanguage;
 } 
