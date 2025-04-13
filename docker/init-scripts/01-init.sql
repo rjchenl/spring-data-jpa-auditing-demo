@@ -51,10 +51,10 @@ CREATE TABLE customer
 );
 
 -- 插入測試用戶
-INSERT INTO pf_user (id, username, password, description, status_id, created_by, modified_by, created_company, created_unit) 
+INSERT INTO pf_user (id, username, password, description, status_id, created_by, modified_by, created_company, modified_company, created_unit, modified_unit, default_language) 
 VALUES 
-(1, 'user1', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'Test User 1', 'ACTIVE', 1, 1, 'Company A', 'Unit A'),
-(2, 'user2', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'Test User 2', 'ACTIVE', 1, 1, 'Company B', 'Unit B');
+(1, 'user1', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'Test User 1', 'ACTIVE', 1, 1, 'Company A', 'Company A', 'Unit A', 'Unit A', 'zh-TW'),
+(2, 'user2', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'Test User 2', 'ACTIVE', 1, 1, 'Company B', 'Company B', 'Unit B', 'Unit B', 'en-US');
 
 -- 設置序列值
 SELECT setval('pf_user_id_seq', 2, true);
