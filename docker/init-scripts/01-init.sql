@@ -27,3 +27,25 @@ CREATE TABLE pf_user
     modified_unit    varchar(100),
     default_language varchar(20) default ''::character varying
 );
+
+CREATE TABLE customer
+(
+    id               bigserial
+        constraint customer_pk
+            primary key,
+    customer_name    varchar(100)                          not null,
+    job_title        varchar(100),
+    -- 標準審計欄位 (Spring Data JPA Auditing)
+    created_by       bigint                                not null,
+    created_time     timestamp   default now()             not null,
+
+    modified_by      bigint                                not null,
+    modified_time    timestamp   default now()             not null,
+
+    -- 自定義審計欄位
+    created_company  varchar(100),
+    modified_company varchar(100),
+    created_unit     varchar(100),
+    modified_unit    varchar(100),
+    default_language varchar(20) default ''::character varying
+);
