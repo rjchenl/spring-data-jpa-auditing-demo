@@ -27,6 +27,8 @@ public class UserRef {
 
     private String username;
     private String displayName;
+    private String company;
+    private String unit;
     
     public UserRef(Long id, String username) {
         this.id = id;
@@ -43,5 +45,13 @@ public class UserRef {
         this.id = id;
         this.username = username;
         this.displayName = displayName;
+    }
+
+    public UserRef(Long id, String username, String displayName, String company, String unit) {
+        this.id = id;
+        this.username = username;
+        this.displayName = displayName;
+        this.company = company;
+        this.unit = unit;
     }
 } 

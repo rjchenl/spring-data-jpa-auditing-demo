@@ -17,8 +17,8 @@ public class UserAuditorAware implements AuditorAware<UserRef> {
     private EntityManager entityManager;
     
     // 定義硬編碼的用戶引用，添加 id 參數
-    private static final UserRef ADMIN_USER = new UserRef(1L, "admin", "Admin User");
-    private static final UserRef NORMAL_USER = new UserRef(2L, "user", "Normal User");
+    private static final UserRef ADMIN_USER = new UserRef(1L, "admin", "Admin User", "DEFAULT_COMPANY", "DEFAULT_UNIT");
+    private static final UserRef NORMAL_USER = new UserRef(2L, "user", "Normal User", "DEFAULT_COMPANY", "DEFAULT_UNIT");
 
     // 使用 ThreadLocal 變量來存儲當前用戶的公司、單位和語言信息
     private static final ThreadLocal<String> currentCompany = ThreadLocal.withInitial(() -> "DEFAULT_COMPANY");
@@ -28,13 +28,17 @@ public class UserAuditorAware implements AuditorAware<UserRef> {
 
     @Override
     public Optional<UserRef> getCurrentAuditor() {
-        // 根據模擬的 token 返回不同的用戶引用
+        // 根據模擬的 token 返回不同的用戶引用，並設置當前的公司和部門
         String token = getCurrentToken();
+        UserRef userRef;
         if ("admin_token".equals(token)) {
-            return Optional.of(ADMIN_USER);
+            userRef = new UserRef(ADMIN_USER.getId(), ADMIN_USER.getUsername(), 
+                ADMIN_USER.getDisplayName(), getCurrentCompany(), getCurrentUnit());
         } else {
-            return Optional.of(NORMAL_USER);
+            userRef = new UserRef(NORMAL_USER.getId(), NORMAL_USER.getUsername(), 
+                NORMAL_USER.getDisplayName(), getCurrentCompany(), getCurrentUnit());
         }
+        return Optional.of(userRef);
     }
 
     // 模擬設置 token 的方法，在實際應用中，這可能由攔截器或過濾器設置

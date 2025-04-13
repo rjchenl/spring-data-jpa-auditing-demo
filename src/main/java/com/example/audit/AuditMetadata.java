@@ -28,7 +28,9 @@ public class AuditMetadata {
         @AttributeOverride(name = "id", column = @Column(name = "created_by", updatable = false)),
         @AttributeOverride(name = "name", column = @Column(name = "created_name", updatable = false)),
         @AttributeOverride(name = "username", column = @Column(name = "created_username", updatable = false)),
-        @AttributeOverride(name = "displayName", column = @Column(name = "created_display_name", updatable = false))
+        @AttributeOverride(name = "displayName", column = @Column(name = "created_display_name", updatable = false)),
+        @AttributeOverride(name = "company", column = @Column(name = "created_company", updatable = false)),
+        @AttributeOverride(name = "unit", column = @Column(name = "created_unit", updatable = false))
     })
     private UserRef creator;
 
@@ -44,7 +46,9 @@ public class AuditMetadata {
         @AttributeOverride(name = "id", column = @Column(name = "modified_by")),
         @AttributeOverride(name = "name", column = @Column(name = "modified_name")),
         @AttributeOverride(name = "username", column = @Column(name = "modified_username")),
-        @AttributeOverride(name = "displayName", column = @Column(name = "modified_display_name"))
+        @AttributeOverride(name = "displayName", column = @Column(name = "modified_display_name")),
+        @AttributeOverride(name = "company", column = @Column(name = "modified_company")),
+        @AttributeOverride(name = "unit", column = @Column(name = "modified_unit"))
     })
     private UserRef modifier;
 
@@ -53,18 +57,50 @@ public class AuditMetadata {
     @Column(name = "modified_time", nullable = false, precision = 6)
     private LocalDateTime modifiedTime;
 
-    // 自定義審計欄位
-    @Column(name = "created_company", updatable = false)
-    private String createdCompany;
+    // 自定義審計欄位的 Getter 和 Setter
+    public String getCreatedCompany() {
+        return creator != null ? creator.getCompany() : null;
+    }
 
-    @Column(name = "modified_company")
-    private String modifiedCompany;
+    public void setCreatedCompany(String createdCompany) {
+        if (creator == null) {
+            creator = new UserRef();
+        }
+        creator.setCompany(createdCompany);
+    }
 
-    @Column(name = "created_unit", updatable = false)
-    private String createdUnit;
+    public String getModifiedCompany() {
+        return modifier != null ? modifier.getCompany() : null;
+    }
 
-    @Column(name = "modified_unit")
-    private String modifiedUnit;
+    public void setModifiedCompany(String modifiedCompany) {
+        if (modifier == null) {
+            modifier = new UserRef();
+        }
+        modifier.setCompany(modifiedCompany);
+    }
+
+    public String getCreatedUnit() {
+        return creator != null ? creator.getUnit() : null;
+    }
+
+    public void setCreatedUnit(String createdUnit) {
+        if (creator == null) {
+            creator = new UserRef();
+        }
+        creator.setUnit(createdUnit);
+    }
+
+    public String getModifiedUnit() {
+        return modifier != null ? modifier.getUnit() : null;
+    }
+
+    public void setModifiedUnit(String modifiedUnit) {
+        if (modifier == null) {
+            modifier = new UserRef();
+        }
+        modifier.setUnit(modifiedUnit);
+    }
 
     @Column(name = "default_language")
     private String defaultLanguage;
