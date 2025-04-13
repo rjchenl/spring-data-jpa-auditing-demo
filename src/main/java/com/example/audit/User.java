@@ -18,7 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserRef {
+public class User {
     @Column(name = "id")
     private Long id;
     
@@ -29,24 +29,24 @@ public class UserRef {
     private String company;
     private String unit;
     
-    public UserRef(Long id, String username) {
+    public User(Long id, String username) {
         this.id = id;
         this.username = username;
         this.displayName = username;
     }
     
-    public UserRef(String username, String displayName) {
+    public User(String username, String displayName) {
         this.username = username;
         this.displayName = displayName;
     }
     
-    public UserRef(Long id, String username, String displayName) {
+    public User(Long id, String username, String displayName) {
         this.id = id;
         this.username = username;
         this.displayName = displayName;
     }
 
-    public UserRef(Long id, String username, String displayName, String company, String unit) {
+    public User(Long id, String username, String displayName, String company, String unit) {
         this.id = id;
         this.username = username;
         this.displayName = displayName;

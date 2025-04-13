@@ -32,7 +32,7 @@ public class AuditMetadata {
         @AttributeOverride(name = "company", column = @Column(name = "created_company", updatable = false)),
         @AttributeOverride(name = "unit", column = @Column(name = "created_unit", updatable = false))
     })
-    private UserRef creator;
+    private User creator;
 
     // 標準審計欄位 - 創建時間
     @CreatedDate
@@ -50,7 +50,7 @@ public class AuditMetadata {
         @AttributeOverride(name = "company", column = @Column(name = "modified_company")),
         @AttributeOverride(name = "unit", column = @Column(name = "modified_unit"))
     })
-    private UserRef modifier;
+    private User modifier;
 
     // 標準審計欄位 - 修改時間
     @LastModifiedDate
@@ -67,7 +67,7 @@ public class AuditMetadata {
 
     public void setCreatedName(String createdName) {
         if (creator == null) {
-            creator = new UserRef();
+            creator = new User();
         }
         creator.setName(createdName);
     }
@@ -78,7 +78,7 @@ public class AuditMetadata {
 
     public void setModifiedName(String modifiedName) {
         if (modifier == null) {
-            modifier = new UserRef();
+            modifier = new User();
         }
         modifier.setName(modifiedName);
     }
@@ -89,7 +89,7 @@ public class AuditMetadata {
 
     public void setCreatedCompany(String createdCompany) {
         if (creator == null) {
-            creator = new UserRef();
+            creator = new User();
         }
         creator.setCompany(createdCompany);
     }
@@ -100,7 +100,7 @@ public class AuditMetadata {
 
     public void setModifiedCompany(String modifiedCompany) {
         if (modifier == null) {
-            modifier = new UserRef();
+            modifier = new User();
         }
         modifier.setCompany(modifiedCompany);
     }
@@ -111,7 +111,7 @@ public class AuditMetadata {
 
     public void setCreatedUnit(String createdUnit) {
         if (creator == null) {
-            creator = new UserRef();
+            creator = new User();
         }
         creator.setUnit(createdUnit);
     }
@@ -122,7 +122,7 @@ public class AuditMetadata {
 
     public void setModifiedUnit(String modifiedUnit) {
         if (modifier == null) {
-            modifier = new UserRef();
+            modifier = new User();
         }
         modifier.setUnit(modifiedUnit);
     }

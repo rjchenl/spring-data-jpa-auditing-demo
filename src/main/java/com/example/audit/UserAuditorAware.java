@@ -2,23 +2,19 @@ package com.example.audit;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.hibernate.Session;
 
 import java.util.Optional;
 
 @Component
-public class UserAuditorAware implements AuditorAware<UserRef> {
+public class UserAuditorAware implements AuditorAware<User> {
     @PersistenceContext
     private EntityManager entityManager;
     
     // 定義硬編碼的用戶引用
-    private static final UserRef ADMIN_USER = new UserRef(1L, "admin", "Admin User");
-    private static final UserRef NORMAL_USER = new UserRef(2L, "user", "Normal User");
+    private static final User ADMIN_USER = new User(1L, "admin", "Admin User");
+    private static final User NORMAL_USER = new User(2L, "user", "Normal User");
 
     // 使用 ThreadLocal 變量來存儲當前用戶的公司、單位和語言信息
     private static final ThreadLocal<String> currentCompany = ThreadLocal.withInitial(() -> "DEFAULT_COMPANY");
@@ -27,20 +23,20 @@ public class UserAuditorAware implements AuditorAware<UserRef> {
     private static final ThreadLocal<String> currentToken = ThreadLocal.withInitial(() -> "");
 
     @Override
-    public Optional<UserRef> getCurrentAuditor() {
-        // 根據模擬的 token 返回不同的用戶引用，並設置當前的公司和部門
+    public Optional<User> getCurrentAuditor() {
+        // 模擬jwt
         String token = getCurrentToken();
-        UserRef userRef;
+        User user;
         if ("token1".equals(token)) {
-            userRef = new UserRef(ADMIN_USER.getId(), ADMIN_USER.getUsername(), 
+            user = new User(ADMIN_USER.getId(), ADMIN_USER.getUsername(),
                 ADMIN_USER.getDisplayName(), getCurrentCompany(), getCurrentUnit());
-            userRef.setName(ADMIN_USER.getDisplayName());  // 設置 name 欄位
+            user.setName(ADMIN_USER.getDisplayName());  // 設置 name 欄位
         } else {
-            userRef = new UserRef(NORMAL_USER.getId(), NORMAL_USER.getUsername(), 
+            user = new User(NORMAL_USER.getId(), NORMAL_USER.getUsername(),
                 NORMAL_USER.getDisplayName(), getCurrentCompany(), getCurrentUnit());
-            userRef.setName(NORMAL_USER.getDisplayName());  // 設置 name 欄位
+            user.setName(NORMAL_USER.getDisplayName());  // 設置 name 欄位
         }
-        return Optional.of(userRef);
+        return Optional.of(user);
     }
 
     // 模擬設置 token 的方法，在實際應用中，這可能由攔截器或過濾器設置

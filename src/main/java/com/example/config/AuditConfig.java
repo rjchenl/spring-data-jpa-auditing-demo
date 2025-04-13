@@ -3,7 +3,6 @@ package com.example.config;
 import com.example.audit.UserAuditorAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -13,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
-import com.example.audit.UserRef;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "userAuditorAware")
