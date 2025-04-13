@@ -1,17 +1,15 @@
 package com.example.entity;
 
-import com.example.audit.AuditMetadata;
+import com.example.audit.AuditBase;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "customer")
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-public class Customer {
+public class Customer extends AuditBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +19,4 @@ public class Customer {
 
     @Column(name = "job_title")
     private String jobTitle;
-
-    @Embedded
-    private AuditMetadata auditMetadata = new AuditMetadata();
 } 

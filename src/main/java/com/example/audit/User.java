@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 用戶實體類，代表資料庫中的一個用戶記錄
+ */
 @Entity
 @Table(name = "pf_user")
 @Data
@@ -16,9 +19,13 @@ import lombok.NoArgsConstructor;
 public class User {
     @Id
     private Long id;
-    private String username;
+    
+    @Column(name = "name")
+    private String name;
+    
     @Column(name = "company_id")
     private String company;
+    
     @Column(name = "status_id")
     private String unit;
 } 
