@@ -8,10 +8,9 @@ import java.util.Optional;
 @Component
 public class UserAuditorAware implements AuditorAware<User> {
 
-    
-
-    private static final User ADMIN_USER = new User(1L, "admin", "Admin User");
-    private static final User NORMAL_USER = new User(2L, "user", "Normal User");
+    private static final User USER1 = new User(1L, "user1", "User 1");
+    private static final User USER2 = new User(2L, "user2", "User 2");
+    private static final User USER3 = new User(3L, "user3", "User 3");
 
     private static final ThreadLocal<String> currentCompany = ThreadLocal.withInitial(() -> "DEFAULT_COMPANY");
     private static final ThreadLocal<String> currentUnit = ThreadLocal.withInitial(() -> "DEFAULT_UNIT");
@@ -23,15 +22,24 @@ public class UserAuditorAware implements AuditorAware<User> {
         // 模擬jwt
         String token = getCurrentToken();
         User user;
-        // 簡化判斷邏輯，只使用 admin_token
-        if ("admin_token".equals(token)) {
-            user = new User(ADMIN_USER.getId(), ADMIN_USER.getUsername(),
-                ADMIN_USER.getDisplayName(), getCurrentCompany(), getCurrentUnit());
-            user.setName(ADMIN_USER.getDisplayName());  // 設置 name 欄位
-        } else {
-            user = new User(NORMAL_USER.getId(), NORMAL_USER.getUsername(),
-                NORMAL_USER.getDisplayName(), getCurrentCompany(), getCurrentUnit());
-            user.setName(NORMAL_USER.getDisplayName());  // 設置 name 欄位
+        
+        // 使用 switch 語句根據 token 返回不同的用戶
+        switch (token) {
+            case "user1_token":
+                user = new User(USER1.getId(), USER1.getUsername(),
+                    USER1.getDisplayName(), getCurrentCompany(), getCurrentUnit());
+                user.setName(USER1.getDisplayName());
+                break;
+            case "user2_token":
+                user = new User(USER2.getId(), USER2.getUsername(),
+                    USER2.getDisplayName(), getCurrentCompany(), getCurrentUnit());
+                user.setName(USER2.getDisplayName());
+                break;
+            default:
+                user = new User(USER3.getId(), USER3.getUsername(),
+                    USER3.getDisplayName(), getCurrentCompany(), getCurrentUnit());
+                user.setName(USER3.getDisplayName());
+                break;
         }
         return Optional.of(user);
     }
