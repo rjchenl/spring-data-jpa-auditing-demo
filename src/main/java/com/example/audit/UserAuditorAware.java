@@ -1,7 +1,5 @@
 package com.example.audit;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
@@ -9,14 +7,12 @@ import java.util.Optional;
 
 @Component
 public class UserAuditorAware implements AuditorAware<User> {
-    @PersistenceContext
-    private EntityManager entityManager;
+
     
-    // 定義硬編碼的用戶引用
+
     private static final User ADMIN_USER = new User(1L, "admin", "Admin User");
     private static final User NORMAL_USER = new User(2L, "user", "Normal User");
 
-    // 使用 ThreadLocal 變量來存儲當前用戶的公司、單位和語言信息
     private static final ThreadLocal<String> currentCompany = ThreadLocal.withInitial(() -> "DEFAULT_COMPANY");
     private static final ThreadLocal<String> currentUnit = ThreadLocal.withInitial(() -> "DEFAULT_UNIT");
     private static final ThreadLocal<String> currentLanguage = ThreadLocal.withInitial(() -> "zh_TW");
@@ -27,7 +23,8 @@ public class UserAuditorAware implements AuditorAware<User> {
         // 模擬jwt
         String token = getCurrentToken();
         User user;
-        if ("token1".equals(token)) {
+        // 簡化判斷邏輯，只使用 admin_token
+        if ("admin_token".equals(token)) {
             user = new User(ADMIN_USER.getId(), ADMIN_USER.getUsername(),
                 ADMIN_USER.getDisplayName(), getCurrentCompany(), getCurrentUnit());
             user.setName(ADMIN_USER.getDisplayName());  // 設置 name 欄位
