@@ -70,3 +70,33 @@ VALUES
 
 -- 設置序列值
 SELECT setval('pf_user_id_seq', 2, true);
+
+-- 創建僅包含創建審計欄位的簡單日誌表
+CREATE TABLE simple_log
+(
+    id               bigserial
+        constraint simple_log_pk
+            primary key,
+    event_type       varchar(50)                           not null,
+    message          text                                  not null,
+    event_time       timestamp,
+    
+    -- 只有創建審計欄位，沒有修改審計欄位
+    created_by       bigint                                not null,
+    created_time     timestamp   default now()             not null,
+    created_name     varchar(100),
+    created_username varchar(100),
+    created_display_name varchar(100),
+    created_company  varchar(100),
+    created_unit     varchar(100),
+    default_language varchar(20) default ''::character varying
+);
+
+-- 插入測試日誌數據
+INSERT INTO simple_log (event_type, message, event_time, created_by, created_name, created_username, created_display_name, created_company, created_unit) 
+VALUES 
+('SYSTEM', '系統啟動', now(), 1, 'User 1', 'user1', 'User 1', 'DEFAULT_COMPANY', 'DEFAULT_UNIT'),
+('LOGIN', '用戶登入', now(), 2, 'User 2', 'user2', 'User 2', 'DEFAULT_COMPANY', 'DEFAULT_UNIT');
+
+-- 設置序列值
+SELECT setval('simple_log_id_seq', 2, true);
