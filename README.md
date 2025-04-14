@@ -250,7 +250,7 @@ curl -X POST http://localhost:8080/api/customers \
 -d '{"customerName":"測試客戶A","jobTitle":"專案經理"}'
 
 # 使用 user2 更新客戶
-curl -X PUT http://localhost:8080/api/customers/18 \
+curl -X PUT http://localhost:8080/api/customers/1 \
 -H "Content-Type: application/json" \
 -H "X-Auth-Token: user2_token" \
 -d '{"customerName":"測試客戶A-更新","jobTitle":"資深專案經理"}'

@@ -50,30 +50,18 @@ public class UserAuditorAware implements AuditorAware<User> {
         return currentToken.get();
     }
 
-    // 提供設置當前用戶公司、單位和語言的公共方法
-    public static void setCurrentCompany(String company) {
-        currentCompany.set(company);
-    }
 
     public static String getCurrentCompany() {
         return currentCompany.get();
     }
 
-    public static void setCurrentUnit(String unit) {
-        currentUnit.set(unit);
-    }
+
 
     public static String getCurrentUnit() {
         return currentUnit.get();
     }
 
-    public static void setCurrentLanguage(String language) {
-        currentLanguage.set(language);
-    }
 
-    public static String getCurrentLanguage() {
-        return currentLanguage.get();
-    }
 
     // 非靜態方法，用於在過濾器中調用
     public void clear() {

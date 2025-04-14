@@ -42,37 +42,5 @@ public class CreateAuditInfo {
     @Column(name = "default_language")
     private String defaultLanguage;
 
-    // 便捷方法
-    public String getCreatedName() {
-        return creator != null ? creator.getName() : null;
-    }
 
-    public void setCreatedName(String createdName) {
-        if (creator == null) {
-            creator = new User();
-        }
-        creator.setName(createdName);
-    }
-
-    public String getCreatedCompany() {
-        return creator != null ? creator.getCompany() : null;
-    }
-
-    public void setCreatedCompany(String createdCompany) {
-        if (creator == null) {
-            creator = new User();
-        }
-        creator.setCompany(createdCompany);
-    }
-
-    public String getCreatedUnit() {
-        return creator != null ? creator.getUnit() : null;
-    }
-
-    public void setCreatedUnit(String createdUnit) {
-        if (creator == null) {
-            creator = new User();
-        }
-        creator.setUnit(createdUnit);
-    }
 } 

@@ -39,37 +39,5 @@ public class UpdateAuditInfo {
     @Column(name = "modified_time", nullable = false, precision = 6)
     private LocalDateTime modifiedTime;
 
-    // 便捷方法
-    public String getModifiedName() {
-        return modifier != null ? modifier.getName() : null;
-    }
 
-    public void setModifiedName(String modifiedName) {
-        if (modifier == null) {
-            modifier = new User();
-        }
-        modifier.setName(modifiedName);
-    }
-
-    public String getModifiedCompany() {
-        return modifier != null ? modifier.getCompany() : null;
-    }
-
-    public void setModifiedCompany(String modifiedCompany) {
-        if (modifier == null) {
-            modifier = new User();
-        }
-        modifier.setCompany(modifiedCompany);
-    }
-
-    public String getModifiedUnit() {
-        return modifier != null ? modifier.getUnit() : null;
-    }
-
-    public void setModifiedUnit(String modifiedUnit) {
-        if (modifier == null) {
-            modifier = new User();
-        }
-        modifier.setUnit(modifiedUnit);
-    }
 } 
