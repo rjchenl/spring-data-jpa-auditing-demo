@@ -27,18 +27,15 @@ public class UserAuditorAware implements AuditorAware<User> {
         switch (token) {
             case "user1_token":
                 user = new User(USER1.getId(), USER1.getUsername(),
-                    USER1.getDisplayName(), getCurrentCompany(), getCurrentUnit());
-                user.setName(USER1.getDisplayName());
+                    USER1.getDisplayName(), getCurrentCompany(), getCurrentUnit(), true);
                 break;
             case "user2_token":
                 user = new User(USER2.getId(), USER2.getUsername(),
-                    USER2.getDisplayName(), getCurrentCompany(), getCurrentUnit());
-                user.setName(USER2.getDisplayName());
+                    USER2.getDisplayName(), getCurrentCompany(), getCurrentUnit(), true);
                 break;
             default:
                 user = new User(USER3.getId(), USER3.getUsername(),
-                    USER3.getDisplayName(), getCurrentCompany(), getCurrentUnit());
-                user.setName(USER3.getDisplayName());
+                    USER3.getDisplayName(), getCurrentCompany(), getCurrentUnit(), true);
                 break;
         }
         return Optional.of(user);

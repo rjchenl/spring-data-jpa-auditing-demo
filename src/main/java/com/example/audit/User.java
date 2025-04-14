@@ -10,7 +10,6 @@ import lombok.Setter;
 
 /**
  * 用戶引用類，用於審計欄位中嵌入用戶信息
- * 與 User 實體不同，這個類是一個可嵌入組件，不代表一個完整的實體
  */
 @Embeddable
 @Data
@@ -52,5 +51,19 @@ public class User {
         this.displayName = displayName;
         this.company = company;
         this.unit = unit;
+    }
+    
+    /**
+     * 創建同時設置name為displayName的構造函數
+     */
+    public User(Long id, String username, String displayName, String company, String unit, boolean setNameAsDisplayName) {
+        this.id = id;
+        this.username = username;
+        this.displayName = displayName;
+        this.company = company;
+        this.unit = unit;
+        if (setNameAsDisplayName) {
+            this.name = displayName;
+        }
     }
 } 
