@@ -13,17 +13,7 @@
 
 ## 核心組件
 
-### 審計基礎類 (傳統繼承方式)
-
-1. **AuditBase**：包含完整審計欄位（創建者和修改者）的基礎類
-   - 記錄創建者、創建時間、修改者、修改時間等所有審計資訊
-   - 適用於需要完整審計的業務實體
-
-2. **CreateAuditBase**：僅包含創建審計欄位的基礎類
-   - 僅記錄創建者和創建時間相關資訊
-   - 適用於日誌、歷史記錄等只需記錄創建資訊的情境
-
-### 審計組合類 (推薦，解決單繼承限制)
+### 審計組合類
 
 1. **CreateAuditInfo**：可嵌入的創建審計資訊類
    - 包含創建者和創建時間相關欄位
@@ -46,7 +36,7 @@
 
 ## 使用指南
 
-### 1. 創建實體類 (組合模式，推薦)
+### 1. 創建實體類
 
 使用嵌入式審計資訊類：
 
@@ -68,8 +58,6 @@ public class Customer {
     // 嵌入修改審計資訊
     @Embedded
     private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
-    
-    // 便捷方法...
 }
 
 // 僅創建審計
@@ -85,8 +73,6 @@ public class SimpleLog {
     // 只嵌入創建審計資訊
     @Embedded
     private CreateAuditInfo createAudit = new CreateAuditInfo();
-    
-    // 便捷方法...
 }
 
 // 僅更新審計
@@ -102,8 +88,6 @@ public class StatusChange {
     // 只嵌入更新審計資訊
     @Embedded
     private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
-    
-    // 便捷方法...
 }
 ```
 
@@ -306,10 +290,6 @@ curl -X PUT http://localhost:8080/api/status-changes/1 \
 
 ## 組合模式優勢
 
-傳統繼承模式限制：
-- Java 單一繼承限制，實體類只能選擇一種審計類型
-- 不夠靈活，無法自由組合審計功能
-
 組合模式優勢：
 1. **突破單一繼承限制**：可以自由組合不同審計組件
 2. **更大的靈活性**：可以根據需要選擇包含哪些審計欄位
@@ -319,7 +299,7 @@ curl -X PUT http://localhost:8080/api/status-changes/1 \
 
 ## 使用審計資訊的正確方式
 
-在實體類中，我們不再提供便捷方法，而是使用直接委派模式訪問審計資訊：
+在實體類中，我們使用直接委派模式訪問審計資訊：
 
 ```java
 // 獲取創建者名稱

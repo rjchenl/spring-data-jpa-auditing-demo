@@ -34,8 +34,5 @@ public class Customer {
     // 嵌入修改審計資訊
     @Embedded
     private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
-    
-    // 便捷方法已刪除，直接使用:
-    // customer.getCreateAudit().getCreatedName()
-    // customer.getUpdateAudit().getModifiedName()
+
 } 

@@ -31,10 +31,8 @@ public class SimpleLog {
     @Column(name = "event_time")
     private LocalDateTime eventTime;
     
-    // 只嵌入創建審計資訊，不包含修改審計
+    // 只嵌入創建審計資訊
     @Embedded
     private CreateAuditInfo createAudit = new CreateAuditInfo();
-    
-    // 便捷方法已刪除，直接使用:
-    // simpleLog.getCreateAudit().getCreatedName()
+
 } 

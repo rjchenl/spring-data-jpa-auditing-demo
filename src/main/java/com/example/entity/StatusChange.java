@@ -40,10 +40,8 @@ public class StatusChange {
     @Column(name = "remark")
     private String remark;
     
-    // 只嵌入更新審計資訊，不使用創建審計
+    // 只嵌入更新審計資訊
     @Embedded
     private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
-    
-    // 便捷方法已刪除，直接使用:
-    // statusChange.getUpdateAudit().getModifiedName()
+
 } 
