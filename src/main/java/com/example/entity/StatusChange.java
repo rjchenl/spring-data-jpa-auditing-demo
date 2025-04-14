@@ -42,6 +42,6 @@ public class StatusChange {
     
     // 只嵌入更新審計資訊
     @Embedded
-    private ModifiedAuditInfo updateAudit = new ModifiedAuditInfo();
+    private ModifiedAuditInfo modifiedAudit = new ModifiedAuditInfo();
 
 } 

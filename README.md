@@ -19,7 +19,7 @@
    - 包含創建者和創建時間相關欄位
    - 可以嵌入到任何實體類中
 
-2. **UpdateAuditInfo**：可嵌入的更新審計資訊類
+2. **ModifiedAuditInfo**：可嵌入的更新審計資訊類
    - 包含修改者和修改時間相關欄位
    - 可以嵌入到任何實體類中
 
@@ -57,7 +57,7 @@ public class Customer {
     
     // 嵌入修改審計資訊
     @Embedded
-    private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
+    private ModifiedAuditInfo modifiedAudit = new ModifiedAuditInfo();
 }
 
 // 僅創建審計
@@ -87,11 +87,11 @@ public class StatusChange {
     
     // 只嵌入更新審計資訊
     @Embedded
-    private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
+    private ModifiedAuditInfo modifiedAudit = new ModifiedAuditInfo();
 }
 ```
 
-### 2. 數據庫表結構
+### 2. 資料庫表格schema
 
 根據審計類型定義表結構：
 
@@ -207,7 +207,7 @@ public class UserAuditorAware implements AuditorAware<User> {
 }
 ```
 
-### 集成其他認證機制
+### 其他認證機制
 
 如果使用不同的認證機制，可修改 TokenFilter 獲取當前用戶：
 
@@ -232,8 +232,7 @@ public class TokenFilter extends OncePerRequestFilter {
 mvn clean install
 mvn spring-boot:run
 
-# 或使用 jar 檔案啟動
-java -jar target/spring-data-jpa-auditing-demo.jar
+
 ```
 
 ### 測試審計功能
@@ -287,47 +286,3 @@ curl -X PUT http://localhost:8080/api/status-changes/1 \
 -H "X-Auth-Token: user2_token" \
 -d '{"entityType":"PRODUCT","entityId":5,"previousStatus":"DRAFT","currentStatus":"REJECTED","changeTime":"2025-04-14T15:30:00","remark":"產品被拒絕"}'
 ```
-
-## 組合模式優勢
-
-組合模式優勢：
-1. **突破單一繼承限制**：可以自由組合不同審計組件
-2. **更大的靈活性**：可以根據需要選擇包含哪些審計欄位
-3. **更簡單的擴展**：新增審計欄位只需修改相應的嵌入類
-4. **類型安全**：編譯時期即可檢查類型錯誤
-5. **直接訪問模式**：通過委派模式直接訪問審計資訊，減少冗餘代碼
-
-## 使用審計資訊的正確方式
-
-在實體類中，我們使用直接委派模式訪問審計資訊：
-
-```java
-// 獲取創建者名稱
-customer.getCreateAudit().getCreatedName();
-
-// 獲取修改者名稱
-customer.getUpdateAudit().getModifiedName();
-
-// 獲取創建時間
-simpleLog.getCreateAudit().getCreatedTime();
-
-// 獲取修改時間
-statusChange.getUpdateAudit().getModifiedTime();
-```
-
-這種方式帶來的好處：
-- 代碼更簡潔，避免冗餘的便捷方法
-- 更清晰的責任分配，審計功能由審計類專門處理
-- 更容易維護，修改審計邏輯時只需修改一處
-- 實體類聚焦於業務邏輯，而非審計細節
-
-## 注意事項
-
-- 確保數據庫表結構包含所有必要的審計欄位
-- 確保在請求中提供正確的 Token
-- 對於高併發場景，需注意 ThreadLocal 的使用
-- 定期檢查審計記錄的完整性
-
----
-
-這個範本提供了一個靈活且可擴展的審計機制，可以根據實際需求進行調整和擴展。通過組合模式，您可以突破 Java 單一繼承的限制，為任何實體類增加所需的審計能力，無需編寫額外的審計代碼。 

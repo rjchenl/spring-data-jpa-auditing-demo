@@ -33,6 +33,6 @@ public class Customer {
     
     // 嵌入修改審計資訊
     @Embedded
-    private ModifiedAuditInfo updateAudit = new ModifiedAuditInfo();
+    private ModifiedAuditInfo modifiedAudit = new ModifiedAuditInfo();
 
 } 
