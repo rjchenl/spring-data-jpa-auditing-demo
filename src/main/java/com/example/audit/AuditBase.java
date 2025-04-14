@@ -3,12 +3,21 @@ package com.example.audit;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Column;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.AttributeOverride;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 /**
- * 審計基礎類，使用嵌入式 AuditMetadata 包含所有審計信息
+ * 審計基礎類，直接包含所有審計信息
  */
 @Getter
 @Setter
@@ -16,52 +25,109 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AuditBase {
     
-    /**
-     * 嵌入式審計信息，包含標準和自定義審計欄位
-     */
+    // 標準審計欄位 - 創建者
+    @CreatedBy
     @Embedded
-    private AuditMetadata auditMetadata = new AuditMetadata();
-    
-    // 為了保持與原有代碼的兼容性，提供委託方法
-    
-    // 自定義審計欄位的 Getter 和 Setter
+    @AttributeOverrides({
+        @AttributeOverride(name = "id", column = @Column(name = "created_by", updatable = false)),
+        @AttributeOverride(name = "name", column = @Column(name = "created_name", updatable = false)),
+        @AttributeOverride(name = "username", column = @Column(name = "created_username", updatable = false)),
+        @AttributeOverride(name = "displayName", column = @Column(name = "created_display_name", updatable = false)),
+        @AttributeOverride(name = "company", column = @Column(name = "created_company", updatable = false)),
+        @AttributeOverride(name = "unit", column = @Column(name = "created_unit", updatable = false))
+    })
+    private User creator;
+
+    // 標準審計欄位 - 創建時間
+    @CreatedDate
+    @Column(name = "created_time", nullable = false, updatable = false, precision = 6)
+    private LocalDateTime createdTime;
+
+    // 標準審計欄位 - 修改者
+    @LastModifiedBy
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "id", column = @Column(name = "modified_by")),
+        @AttributeOverride(name = "name", column = @Column(name = "modified_name")),
+        @AttributeOverride(name = "username", column = @Column(name = "modified_username")),
+        @AttributeOverride(name = "displayName", column = @Column(name = "modified_display_name")),
+        @AttributeOverride(name = "company", column = @Column(name = "modified_company")),
+        @AttributeOverride(name = "unit", column = @Column(name = "modified_unit"))
+    })
+    private User modifier;
+
+    // 標準審計欄位 - 修改時間
+    @LastModifiedDate
+    @Column(name = "modified_time", nullable = false, precision = 6)
+    private LocalDateTime modifiedTime;
+
+    @Column(name = "default_language")
+    private String defaultLanguage;
+
+    // Getter 和 Setter 方法
+    public String getCreatedName() {
+        return creator != null ? creator.getName() : null;
+    }
+
+    public void setCreatedName(String createdName) {
+        if (creator == null) {
+            creator = new User();
+        }
+        creator.setName(createdName);
+    }
+
+    public String getModifiedName() {
+        return modifier != null ? modifier.getName() : null;
+    }
+
+    public void setModifiedName(String modifiedName) {
+        if (modifier == null) {
+            modifier = new User();
+        }
+        modifier.setName(modifiedName);
+    }
+
     public String getCreatedCompany() {
-        return auditMetadata.getCreatedCompany();
+        return creator != null ? creator.getCompany() : null;
     }
-    
+
     public void setCreatedCompany(String createdCompany) {
-        auditMetadata.setCreatedCompany(createdCompany);
+        if (creator == null) {
+            creator = new User();
+        }
+        creator.setCompany(createdCompany);
     }
-    
+
     public String getModifiedCompany() {
-        return auditMetadata.getModifiedCompany();
+        return modifier != null ? modifier.getCompany() : null;
     }
-    
+
     public void setModifiedCompany(String modifiedCompany) {
-        auditMetadata.setModifiedCompany(modifiedCompany);
+        if (modifier == null) {
+            modifier = new User();
+        }
+        modifier.setCompany(modifiedCompany);
     }
-    
+
     public String getCreatedUnit() {
-        return auditMetadata.getCreatedUnit();
+        return creator != null ? creator.getUnit() : null;
     }
-    
+
     public void setCreatedUnit(String createdUnit) {
-        auditMetadata.setCreatedUnit(createdUnit);
+        if (creator == null) {
+            creator = new User();
+        }
+        creator.setUnit(createdUnit);
     }
-    
+
     public String getModifiedUnit() {
-        return auditMetadata.getModifiedUnit();
+        return modifier != null ? modifier.getUnit() : null;
     }
-    
+
     public void setModifiedUnit(String modifiedUnit) {
-        auditMetadata.setModifiedUnit(modifiedUnit);
-    }
-    
-    public String getDefaultLanguage() {
-        return auditMetadata.getDefaultLanguage();
-    }
-    
-    public void setDefaultLanguage(String defaultLanguage) {
-        auditMetadata.setDefaultLanguage(defaultLanguage);
+        if (modifier == null) {
+            modifier = new User();
+        }
+        modifier.setUnit(modifiedUnit);
     }
 }
