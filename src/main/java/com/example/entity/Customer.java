@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+/**
+ * 客戶實體 - 使用完整審計（創建和修改）
+ * 通過組合模式嵌入審計資訊
+ */
 @Entity
 @Table(name = "customer")
 @EntityListeners(AuditingEntityListener.class)
@@ -31,39 +35,7 @@ public class Customer {
     @Embedded
     private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
     
-    // 提供便捷方法，使用方式和原先相同
-    
-    // 創建者相關
-    public String getCreatedName() {
-        return createAudit.getCreatedName();
-    }
-    
-    public String getCreatedCompany() {
-        return createAudit.getCreatedCompany();
-    }
-    
-    public String getCreatedUnit() {
-        return createAudit.getCreatedUnit();
-    }
-    
-    // 修改者相關
-    public String getModifiedName() {
-        return updateAudit.getModifiedName();
-    }
-    
-    public String getModifiedCompany() {
-        return updateAudit.getModifiedCompany();
-    }
-    
-    public String getModifiedUnit() {
-        return updateAudit.getModifiedUnit();
-    }
-    
-    public String getDefaultLanguage() {
-        return createAudit.getDefaultLanguage();
-    }
-    
-    public void setDefaultLanguage(String defaultLanguage) {
-        createAudit.setDefaultLanguage(defaultLanguage);
-    }
+    // 便捷方法已刪除，直接使用:
+    // customer.getCreateAudit().getCreatedName()
+    // customer.getUpdateAudit().getModifiedName()
 } 

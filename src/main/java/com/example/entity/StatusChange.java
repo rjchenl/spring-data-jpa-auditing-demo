@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 /**
  * 狀態變更紀錄 - 這個實體僅使用更新審計欄位
- * 演示只需要更新審計欄位的場景
+ * 通過組合模式嵌入更新審計資訊
  */
 @Entity
 @Table(name = "status_change")
@@ -44,20 +44,6 @@ public class StatusChange {
     @Embedded
     private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
     
-    // 提供便捷方法，使用和繼承相同的方式
-    public String getModifiedName() {
-        return updateAudit.getModifiedName();
-    }
-    
-    public LocalDateTime getModifiedTime() {
-        return updateAudit.getModifiedTime();
-    }
-    
-    public String getModifiedCompany() {
-        return updateAudit.getModifiedCompany();
-    }
-    
-    public String getModifiedUnit() {
-        return updateAudit.getModifiedUnit();
-    }
+    // 便捷方法已刪除，直接使用:
+    // statusChange.getUpdateAudit().getModifiedName()
 } 

@@ -315,7 +315,31 @@ curl -X PUT http://localhost:8080/api/status-changes/1 \
 2. **更大的靈活性**：可以根據需要選擇包含哪些審計欄位
 3. **更簡單的擴展**：新增審計欄位只需修改相應的嵌入類
 4. **類型安全**：編譯時期即可檢查類型錯誤
-5. **和繼承同樣易用**：通過便捷方法保持API一致性
+5. **直接訪問模式**：通過委派模式直接訪問審計資訊，減少冗餘代碼
+
+## 使用審計資訊的正確方式
+
+在實體類中，我們不再提供便捷方法，而是使用直接委派模式訪問審計資訊：
+
+```java
+// 獲取創建者名稱
+customer.getCreateAudit().getCreatedName();
+
+// 獲取修改者名稱
+customer.getUpdateAudit().getModifiedName();
+
+// 獲取創建時間
+simpleLog.getCreateAudit().getCreatedTime();
+
+// 獲取修改時間
+statusChange.getUpdateAudit().getModifiedTime();
+```
+
+這種方式帶來的好處：
+- 代碼更簡潔，避免冗餘的便捷方法
+- 更清晰的責任分配，審計功能由審計類專門處理
+- 更容易維護，修改審計邏輯時只需修改一處
+- 實體類聚焦於業務邏輯，而非審計細節
 
 ## 注意事項
 

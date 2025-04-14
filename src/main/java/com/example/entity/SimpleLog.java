@@ -8,6 +8,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+/**
+ * 簡單日誌實體 - 只使用創建審計
+ * 通過組合模式嵌入創建審計資訊
+ */
 @Entity
 @Table(name = "simple_log")
 @EntityListeners(AuditingEntityListener.class)
@@ -31,21 +35,6 @@ public class SimpleLog {
     @Embedded
     private CreateAuditInfo createAudit = new CreateAuditInfo();
     
-    // 提供便捷方法
-
-    public String getCreatedCompany() {
-        return createAudit.getCreatedCompany();
-    }
-    
-    public String getCreatedUnit() {
-        return createAudit.getCreatedUnit();
-    }
-    
-    public String getDefaultLanguage() {
-        return createAudit.getDefaultLanguage();
-    }
-    
-    public void setDefaultLanguage(String defaultLanguage) {
-        createAudit.setDefaultLanguage(defaultLanguage);
-    }
+    // 便捷方法已刪除，直接使用:
+    // simpleLog.getCreateAudit().getCreatedName()
 } 
