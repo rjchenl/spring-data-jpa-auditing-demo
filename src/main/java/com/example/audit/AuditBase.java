@@ -64,7 +64,6 @@ public abstract class AuditBase {
     @Column(name = "default_language")
     private String defaultLanguage;
 
-    // Getter 和 Setter 方法
     public String getCreatedName() {
         return creator != null ? creator.getName() : null;
     }
