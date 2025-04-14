@@ -1,6 +1,6 @@
 package com.example.entity;
 
-import com.example.audit.UpdateAuditInfo;
+import com.example.audit.ModifiedAuditInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,6 +42,6 @@ public class StatusChange {
     
     // 只嵌入更新審計資訊
     @Embedded
-    private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
+    private ModifiedAuditInfo updateAudit = new ModifiedAuditInfo();
 
 } 

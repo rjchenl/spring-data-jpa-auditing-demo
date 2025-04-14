@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Embeddable
 @Getter
 @Setter
-public class UpdateAuditInfo {
+public class ModifiedAuditInfo {
     
     // 標準審計欄位 - 修改者
     @LastModifiedBy

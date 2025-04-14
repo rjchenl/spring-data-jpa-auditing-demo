@@ -1,7 +1,7 @@
 package com.example.entity;
 
 import com.example.audit.CreateAuditInfo;
-import com.example.audit.UpdateAuditInfo;
+import com.example.audit.ModifiedAuditInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +33,6 @@ public class Customer {
     
     // 嵌入修改審計資訊
     @Embedded
-    private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
+    private ModifiedAuditInfo updateAudit = new ModifiedAuditInfo();
 
 } 
