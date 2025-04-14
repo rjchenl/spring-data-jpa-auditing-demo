@@ -1,27 +1,25 @@
 package com.example.audit;
 
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Column;
-import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
 /**
- * 僅創建審計基礎類，只包含創建相關的審計資訊
+ * 可嵌入的創建審計資訊類
+ * 用於組合模式審計機制
  */
+@Embeddable
 @Getter
 @Setter
-@MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
-public abstract class CreateAuditBase {
+public class CreateAuditInfo {
     
     // 標準審計欄位 - 創建者
     @CreatedBy
@@ -44,6 +42,7 @@ public abstract class CreateAuditBase {
     @Column(name = "default_language")
     private String defaultLanguage;
 
+    // 便捷方法
     public String getCreatedName() {
         return creator != null ? creator.getName() : null;
     }

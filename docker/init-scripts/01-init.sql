@@ -91,3 +91,28 @@ CREATE TABLE simple_log
     created_unit     varchar(100),
     default_language varchar(20) default ''::character varying
 );
+
+
+-- 創建僅包含修改審計欄位的狀態變更表
+CREATE TABLE status_change
+(
+    id               bigserial
+        constraint status_change_pk
+            primary key,
+    entity_type      varchar(50)                           not null,
+    entity_id        bigint                                not null,
+    previous_status  varchar(50),
+    current_status   varchar(50)                           not null,
+    change_time      timestamp,
+    remark           text,
+    
+    -- 只有修改審計欄位，沒有創建審計欄位
+    modified_by      bigint                                not null,
+    modified_time    timestamp   default now()             not null,
+    modified_name    varchar(100),
+    modified_username varchar(100),
+    modified_display_name varchar(100),
+    modified_company varchar(100),
+    modified_unit    varchar(100)
+);
+

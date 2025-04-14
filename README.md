@@ -5,15 +5,15 @@
 ## 功能特點
 
 - **完整的審計追蹤**：自動記錄數據的創建者、創建時間、修改者和修改時間
-- **多樣化的審計模式**：提供標準審計（含創建和修改）和簡化審計（僅創建）兩種模式
+- **多樣化的審計模式**：提供標準審計（含創建和修改）和簡化審計（僅創建或僅修改）三種模式
 - **自定義審計欄位**：除了標準審計欄位外，還支持自定義欄位如公司、部門等
-- **無侵入式設計**：審計功能完全基於 JPA 註解和實體繼承，對業務代碼無侵入
+- **無侵入式設計**：審計功能基於 JPA 註解和組合模式，克服 Java 單一繼承限制
 - **線程安全**：基於 ThreadLocal 實現的用戶上下文管理，確保多線程環境下的安全性
 - **與安全機制整合**：通過請求過濾器與認證機制整合，支持 Token 驗證
 
 ## 核心組件
 
-### 審計基礎類
+### 審計基礎類 (傳統繼承方式)
 
 1. **AuditBase**：包含完整審計欄位（創建者和修改者）的基礎類
    - 記錄創建者、創建時間、修改者、修改時間等所有審計資訊
@@ -22,6 +22,16 @@
 2. **CreateAuditBase**：僅包含創建審計欄位的基礎類
    - 僅記錄創建者和創建時間相關資訊
    - 適用於日誌、歷史記錄等只需記錄創建資訊的情境
+
+### 審計組合類 (推薦，解決單繼承限制)
+
+1. **CreateAuditInfo**：可嵌入的創建審計資訊類
+   - 包含創建者和創建時間相關欄位
+   - 可以嵌入到任何實體類中
+
+2. **UpdateAuditInfo**：可嵌入的更新審計資訊類
+   - 包含修改者和修改時間相關欄位
+   - 可以嵌入到任何實體類中
 
 ### 用戶審計提供者
 
@@ -36,45 +46,78 @@
 
 ## 使用指南
 
-### 1. 創建實體類
+### 1. 創建實體類 (組合模式，推薦)
 
-從相應的審計基礎類繼承來獲取審計功能：
+使用嵌入式審計資訊類：
 
 ```java
-// 需要完整審計（創建和修改）的實體
+// 完整審計（創建+更新）
 @Entity
-@Table(name = "customer")
-public class Customer extends AuditBase {
+@EntityListeners(AuditingEntityListener.class)
+public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     // 業務屬性...
+    
+    // 嵌入創建審計資訊
+    @Embedded
+    private CreateAuditInfo createAudit = new CreateAuditInfo();
+    
+    // 嵌入修改審計資訊
+    @Embedded
+    private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
+    
+    // 便捷方法...
 }
 
-// 僅需要創建審計的實體（如日誌）
+// 僅創建審計
 @Entity
-@Table(name = "simple_log")
-public class SimpleLog extends CreateAuditBase {
+@EntityListeners(AuditingEntityListener.class)
+public class SimpleLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     // 業務屬性...
+    
+    // 只嵌入創建審計資訊
+    @Embedded
+    private CreateAuditInfo createAudit = new CreateAuditInfo();
+    
+    // 便捷方法...
+}
+
+// 僅更新審計
+@Entity
+@EntityListeners(AuditingEntityListener.class)
+public class StatusChange {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    // 業務屬性...
+    
+    // 只嵌入更新審計資訊
+    @Embedded
+    private UpdateAuditInfo updateAudit = new UpdateAuditInfo();
+    
+    // 便捷方法...
 }
 ```
 
 ### 2. 數據庫表結構
 
-確保表結構包含相應的審計欄位：
+根據審計類型定義表結構：
 
 ```sql
--- 完整審計表（包含創建和修改）
-CREATE TABLE your_table (
+-- 完整審計表（創建+更新）
+CREATE TABLE customer (
     id bigserial primary key,
     -- 業務欄位...
     
-    -- 審計欄位
+    -- 創建審計欄位
     created_by bigint not null,
     created_time timestamp not null,
     created_name varchar(100),
@@ -83,6 +126,7 @@ CREATE TABLE your_table (
     created_company varchar(100),
     created_unit varchar(100),
     
+    -- 更新審計欄位
     modified_by bigint not null,
     modified_time timestamp not null,
     modified_name varchar(100),
@@ -94,12 +138,12 @@ CREATE TABLE your_table (
     default_language varchar(20)
 );
 
--- 簡化審計表（僅創建欄位）
-CREATE TABLE your_log_table (
+-- 僅創建審計表
+CREATE TABLE simple_log (
     id bigserial primary key,
     -- 業務欄位...
     
-    -- 審計欄位（僅創建者）
+    -- 只有創建審計欄位
     created_by bigint not null,
     created_time timestamp not null,
     created_name varchar(100),
@@ -109,6 +153,21 @@ CREATE TABLE your_log_table (
     created_unit varchar(100),
     
     default_language varchar(20)
+);
+
+-- 僅更新審計表
+CREATE TABLE status_change (
+    id bigserial primary key,
+    -- 業務欄位...
+    
+    -- 只有更新審計欄位
+    modified_by bigint not null,
+    modified_time timestamp not null,
+    modified_name varchar(100),
+    modified_username varchar(100),
+    modified_display_name varchar(100),
+    modified_company varchar(100),
+    modified_unit varchar(100)
 );
 ```
 
@@ -132,15 +191,19 @@ curl -X PUT http://localhost:8080/api/customers/1 \
 
 ## 示例說明
 
-本專案包含兩個完整的示例：
+本專案包含三個完整的示例：
 
-1. **Customer**：完整審計（繼承自 AuditBase）
+1. **Customer**：完整審計（創建+更新）
    - 完整的 CRUD 操作
    - 展示創建者和修改者資訊的變化
 
-2. **SimpleLog**：簡化審計（繼承自 CreateAuditBase）
+2. **SimpleLog**：僅創建審計
    - 僅記錄創建者資訊
    - 適用於日誌、歷史記錄等不需追蹤修改的場景
+
+3. **StatusChange**：僅更新審計
+   - 僅記錄修改者資訊
+   - 適用於狀態變更、審批流程等只關注操作者的場景
 
 ## 配置與擴展
 
@@ -191,7 +254,7 @@ java -jar target/spring-data-jpa-auditing-demo.jar
 
 ### 測試審計功能
 
-以下是具體的測試案例，展示了完整和簡化審計功能：
+以下是具體的測試案例，展示了三種審計功能：
 
 #### Customer 實體測試 (完整審計)
 
@@ -209,7 +272,7 @@ curl -X PUT http://localhost:8080/api/customers/18 \
 -d '{"customerName":"測試客戶A-更新","jobTitle":"資深專案經理"}'
 ```
 
-#### SimpleLog 實體測試 (簡化審計，只有創建欄位)
+#### SimpleLog 實體測試 (僅創建審計)
 
 ```bash
 # 使用 user1 建立日誌
@@ -225,6 +288,35 @@ curl -X PUT http://localhost:8080/api/logs/1 \
 -d '{"eventType":"SYSTEM_UPDATE","message":"系統更新完成123","eventTime":"2025-04-14T12:00:00"}'
 ```
 
+#### StatusChange 實體測試 (僅更新審計)
+
+```bash
+# 使用 user1 建立狀態變更記錄（僅記錄修改者資訊）
+curl -X POST http://localhost:8080/api/status-changes \
+-H "Content-Type: application/json" \
+-H "X-Auth-Token: user1_token" \
+-d '{"entityType":"PRODUCT","entityId":5,"previousStatus":"DRAFT","currentStatus":"PUBLISHED","changeTime":"2025-04-14T14:30:00","remark":"產品發布"}'
+
+# 使用 user2 更新狀態變更記錄
+curl -X PUT http://localhost:8080/api/status-changes/1 \
+-H "Content-Type: application/json" \
+-H "X-Auth-Token: user2_token" \
+-d '{"entityType":"PRODUCT","entityId":5,"previousStatus":"DRAFT","currentStatus":"REJECTED","changeTime":"2025-04-14T15:30:00","remark":"產品被拒絕"}'
+```
+
+## 組合模式優勢
+
+傳統繼承模式限制：
+- Java 單一繼承限制，實體類只能選擇一種審計類型
+- 不夠靈活，無法自由組合審計功能
+
+組合模式優勢：
+1. **突破單一繼承限制**：可以自由組合不同審計組件
+2. **更大的靈活性**：可以根據需要選擇包含哪些審計欄位
+3. **更簡單的擴展**：新增審計欄位只需修改相應的嵌入類
+4. **類型安全**：編譯時期即可檢查類型錯誤
+5. **和繼承同樣易用**：通過便捷方法保持API一致性
+
 ## 注意事項
 
 - 確保數據庫表結構包含所有必要的審計欄位
@@ -234,4 +326,4 @@ curl -X PUT http://localhost:8080/api/logs/1 \
 
 ---
 
-這個範本提供了一個靈活且可擴展的審計機制，可以根據實際需求進行調整和擴展。通過簡單的繼承，您可以為任何實體類增加審計能力，無需編寫額外的審計代碼。 
+這個範本提供了一個靈活且可擴展的審計機制，可以根據實際需求進行調整和擴展。通過組合模式，您可以突破 Java 單一繼承的限制，為任何實體類增加所需的審計能力，無需編寫額外的審計代碼。 
